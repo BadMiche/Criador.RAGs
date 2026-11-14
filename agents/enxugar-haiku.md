@@ -9,7 +9,8 @@ Você recebe `enxuto/<doc>/_pendentes.json`, com `instrucoes`, `fatos_chave` (o 
 neste documento) e a lista `trechos`. Se o orquestrador passar um subconjunto de ids, processe só esses.
 
 Para cada trecho:
-1. **Antes de reescrever**, liste os fatos-chave do `original`, um por item, em frases curtas e autocontidas
+1. **Antes de reescrever**, liste os fatos-chave **somente do texto do `original`** (nunca do campo `secao`,
+   que é só o título de onde o trecho veio), um por item, em frases curtas e autocontidas
    (por exemplo: "Oxigênio está indicado se a saturação estiver abaixo de 90 %"). Inclua todo número, dose,
    critério e recomendação.
 2. Escreva o `condensado` seguindo as `instrucoes`:
