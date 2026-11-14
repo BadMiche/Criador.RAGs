@@ -30,9 +30,16 @@ LINK = re.compile(r"!\[[^\]]*\]\([^)]*\)")
 
 
 def numeros(texto: str) -> set[str]:
+    """Números com unidade, normalizados. Faixas ("50 a 74 anos") também contam cada ponta,
+    para que "50 anos e 74 anos" e "50 a 74 anos" sejam equivalentes."""
     texto = LINK.sub(" ", texto)
-    return {re.sub(r"\s+", "", f"{n}{u}").replace(",", ".").replace("–", "-").lower()
-            for n, u in NUM_UNID.findall(texto)}
+    out = set()
+    for n, u in NUM_UNID.findall(texto):
+        n, u = re.sub(r"\s+", "", n).replace(",", ".").replace("–", "-"), u.lower()
+        pontas = re.split(r"-|a", n)
+        out.add(f"{n}{u}" if len(pontas) == 1 else f"{pontas[0]}-{pontas[1]}{u}")
+        out.update(f"{p}{u}" for p in pontas if p)
+    return out
 
 
 def _hash(s: str) -> str:
@@ -117,7 +124,7 @@ def rodar(proj: Projeto, doc: str) -> dict:
     for (tid, saida), r in zip(alvos, respostas):
         falhas = []
         orig, cond = textos[tid]["texto"], saida["condensado"]
-        for n in sorted(numeros(orig) - numeros(cond)):
+        for n in sorted(n for n in numeros(orig) - numeros(cond) if "-" not in n):
             falhas.append(f"número/dose ausente: {n}")
         for i, f in enumerate(saida.get("fatos_chave", [])):
             p = r[f"fato_{i:02d}"]["noul"]

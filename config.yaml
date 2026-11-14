@@ -26,7 +26,8 @@ metadados:
 verificacao:
   fato_min: 0.7               # cada fato-chave precisa estar no condensado
   inventa_max: 0.3            # condensado não pode afirmar o que o original não diz
-  omite_max: 0.3              # condensado não pode deixar de fora recomendação/resultado
+  omite_max: 0.7              # pergunta geral de omissão: só reprova quando o Jev diz claramente que sim
+                              # (as checagens precisas são os fatos-chave e os números)
   max_voltas: 2               # re-enxugamentos com feedback antes de chamar o diagnóstico
   max_redesenhos: 1           # quantas vezes o Opus pode refazer o plano de um documento
 

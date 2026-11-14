@@ -189,7 +189,8 @@ def test_divisao_respeita_limite_e_tabela():
 
 def test_numeros_com_unidade():
     a = verificar.numeros("Dose 10 mg/kg, saturação < 90 %, 3-5 dias; ver ![x](p012_fig03.png)")
-    assert a == {"10mg", "90%", "3-5dias"}
+    assert a == {"10mg", "90%", "3-5dias", "3dias", "5dias"}
+    assert verificar.numeros("50 anos e 74 anos") <= verificar.numeros("de 50 a 74 anos")
     assert verificar.numeros("Dose 10 mg/kg") <= a
 
 
