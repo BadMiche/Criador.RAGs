@@ -1,6 +1,6 @@
 ---
 name: revisor-triagem-sonnet
-description: Revisa as decisões arriscadas da triagem do Jev (todo "descartar" e as decisões incertas) antes do enxugamento. Use na etapa 7b do criar-rag.
+description: Revisa as decisões arriscadas da triagem do Jev (todo "descartar" e as decisões incertas) antes do enxugamento. Use na etapa 7b do resumir.
 model: sonnet
 tools: Read, Write
 ---

@@ -31,7 +31,7 @@ def estimar_tokens(texto: str) -> int:
 
 
 class Projeto:
-    """Pastas de um projeto (futuro RAG): rags/<nome>/..."""
+    """Pastas de trabalho de um assunto: results/<assunto>/.trabalho/..."""
 
     def __init__(self, raiz: str | Path):
         self.raiz = Path(raiz).resolve()
@@ -85,6 +85,11 @@ class Projeto:
 
     def documentos(self) -> list[str]:
         return sorted(p.stem for p in (self.raiz / "fontes").glob("*.md"))
+
+
+def projeto_de(destino: str | Path) -> Projeto:
+    """results/<assunto> -> arquivos de trabalho em results/<assunto>/.trabalho"""
+    return Projeto(Path(destino) / ".trabalho")
 
 
 def ler_json(caminho: Path, padrao: Any = None) -> Any:

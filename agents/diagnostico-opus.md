@@ -1,6 +1,6 @@
 ---
 name: diagnostico-opus
-description: Analisa os trechos cujo enxugamento falhou mesmo após as voltas de correção, descobre a causa e decide se o fluxo do documento (perguntas, divisão ou instrução de enxugamento) precisa ser recriado. Use na etapa 10 do criar-rag.
+description: Analisa os trechos cujo enxugamento falhou mesmo após as voltas de correção, descobre a causa e decide se o fluxo do documento (perguntas, divisão ou instrução de enxugamento) precisa ser recriado. Use na etapa 10 do resumir.
 model: opus
 tools: Read, Write, Bash
 ---

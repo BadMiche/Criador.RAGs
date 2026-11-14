@@ -1,6 +1,6 @@
 ---
 name: descrever-imagem-haiku
-description: Escreve uma descrição curta de cada imagem mantida, para identificá-la depois. Use na etapa 3 do criar-rag.
+description: Escreve uma descrição curta de cada imagem mantida, para identificá-la depois. Use na etapa 3 do resumir.
 model: haiku
 tools: Read, Write
 ---

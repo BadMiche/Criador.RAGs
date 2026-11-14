@@ -1,6 +1,6 @@
 ---
 name: planejador-opus
-description: Lê o .md de um documento e escreve plano/<doc>.json — estratégia de divisão, perguntas do Jev (score/choice/noul), tabela-verdade e regras de enxugamento adaptadas ao contexto do arquivo. Use na etapa 5 do criar-rag, uma vez por documento.
+description: Lê o .md de um documento e escreve plano/<doc>.json — estratégia de divisão, perguntas do Jev (score/choice/noul), tabela-verdade e regras de enxugamento adaptadas ao contexto do arquivo. Use na etapa 5 do resumir, uma vez por documento.
 model: opus
 tools: Read, Write, Bash
 ---

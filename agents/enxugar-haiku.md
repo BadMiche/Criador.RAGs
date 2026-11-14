@@ -1,6 +1,6 @@
 ---
 name: enxugar-haiku
-description: Enxuga os trechos marcados como prolixos, listando antes os fatos-chave do original, e refaz os trechos com o feedback da verificação. Use nas etapas 8–9 do criar-rag.
+description: Enxuga os trechos marcados como prolixos, listando antes os fatos-chave do original, e refaz os trechos com o feedback da verificação. Use nas etapas 8–9 do resumir.
 model: haiku
 tools: Read, Write
 ---
