@@ -216,3 +216,26 @@ def test_sobra_pequena_volta_para_o_pedaco_anterior():
     for p in paragrafos:
         assert junto.count(p) == 1          # nada perdido nem duplicado
     assert "Sobra curta." in ts[-1]["texto"] and ts[-1]["tokens"] > 50
+
+
+def test_fatos_chave_congelados_na_primeira_tentativa(projeto, pdf_exemplo, plano_exemplo, jev):
+    doc = _extrair(projeto, pdf_exemplo)
+    salvar_json(projeto.plano(doc), plano_exemplo)
+    from comum import salvar_jsonl
+    salvar_jsonl(projeto.trechos(doc), dividir.dividir_md(projeto.fonte(doc).read_text(), plano_exemplo["divisao"]))
+    triagem.rodar(projeto, doc)
+    lista = triagem.pendentes(projeto, doc) and ler_json(projeto.pasta("revisao") / f"{doc}.pendentes.json")
+    salvar_json(projeto.revisao(doc), {p["id"]: {"acao": p["acao_proposta"]} for p in lista})
+    triagem.aplicar_revisao(projeto, doc)
+    tid = next(d["id"] for d in ler_jsonl(projeto.triagem(doc)) if d["acao_final"] == "enxugar")
+
+    jev.omite = 0.9
+    salvar_json(projeto.enxuto(doc) / f"{tid}.json", {"fatos_chave": ["fato A"], "condensado": "v1"})
+    verificar.rodar(projeto, doc)
+    jev.omite = 0.05
+    # o Haiku tenta encurtar a própria checklist: a verificação continua cobrando "fato A"
+    salvar_json(projeto.enxuto(doc) / f"{tid}.json", {"fatos_chave": [], "condensado": "v2"})
+    verificar.rodar(projeto, doc)
+    ultima = jev.chamadas[-1]["questions"]
+    assert "fato A" in ultima["fato_00"]["instructions"]
+    verificar.pendentes(projeto, doc)

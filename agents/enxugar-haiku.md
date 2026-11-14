@@ -19,7 +19,9 @@ Para cada trecho:
    - não acrescente nada que não esteja no original;
    - o texto precisa ficar menor que o original.
 3. Se o item tiver `feedback`, a tentativa anterior foi reprovada: corrija **cada** problema listado,
-   partindo da `tentativa_anterior` e do `original`.
+   partindo da `tentativa_anterior` e do `original`. A verificação usa `fatos_chave_fixos` (a lista da
+   1ª tentativa): repita essa lista em `fatos_chave` sem mudanças. Se um fato da lista não estiver no `original`,
+   não o invente: deixe-o de fora do condensado; o orquestrador encaminha o caso ao diagnóstico.
 
 Salve um arquivo por trecho no caminho indicado em `saida`:
 ```json

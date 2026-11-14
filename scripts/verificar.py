@@ -70,6 +70,7 @@ def pendentes(proj: Projeto, doc: str) -> dict:
         if s.get("status") == "refazer":
             ult = s["historico"][-1]
             item["tentativa_anterior"] = ult["condensado"]
+            item["fatos_chave_fixos"] = s.get("fatos_chave", [])
             item["feedback"] = ult["falhas"]
         lista.append(item)
     proj.enxuto(doc).mkdir(parents=True, exist_ok=True)
@@ -115,8 +116,14 @@ def rodar(proj: Projeto, doc: str) -> dict:
             continue  # o Haiku ainda não reescreveu
         alvos.append((d["id"], saida))
 
+    # Fatos-chave congelados na 1ª tentativa: o Haiku não pode encurtar a própria checklist depois.
+    for i, s in alvos:
+        st = est.setdefault(i, {"tentativas": 0, "historico": []})
+        st.setdefault("fatos_chave", list(s.get("fatos_chave", [])))
+        s["fatos_chave"] = st["fatos_chave"]
+
     tarefas = [{"state": {"original": textos[i]["texto"], "condensado": s["condensado"]},
-                "questions": perguntas_verificacao(s.get("fatos_chave", []), plano),
+                "questions": perguntas_verificacao(s["fatos_chave"], plano),
                 "log": proj.log_jev(doc), "contexto": {"etapa": "verificacao", "id": i}} for i, s in alvos]
     respostas = jev_client.perguntar_varios(tarefas) if tarefas else []
 
@@ -126,7 +133,7 @@ def rodar(proj: Projeto, doc: str) -> dict:
         orig, cond = textos[tid]["texto"], saida["condensado"]
         for n in sorted(n for n in numeros(orig) - numeros(cond) if "-" not in n):
             falhas.append(f"número/dose ausente: {n}")
-        for i, f in enumerate(saida.get("fatos_chave", [])):
+        for i, f in enumerate(saida["fatos_chave"]):
             p = r[f"fato_{i:02d}"]["noul"]
             if p < vc["fato_min"]:
                 falhas.append(f"fato-chave ausente ou alterado (p={p:.2f}): {f}")
@@ -138,7 +145,7 @@ def rodar(proj: Projeto, doc: str) -> dict:
         if len(cond) >= len(orig) and len(orig) > 200:  # um título solto não tem como encolher
             falhas.append("o condensado não ficou menor que o original")
 
-        s = est.setdefault(tid, {"tentativas": 0, "historico": []})
+        s = est[tid]
         s["historico"].append({"hash": _hash(cond), "condensado": cond, "falhas": falhas,
                                "respostas": jev_client.resumir(r), "versao_plano": plano.get("versao", 1)})
         if not falhas:
