@@ -1,20 +1,13 @@
 {
+  "enabledPlugins": {
+    "typesafe@typesafe-ai": true
+  },
   "extraKnownMarketplaces": {
     "typesafe-ai": {
       "source": {
         "source": "github",
         "repo": "typesafe-ai/skills"
       }
-    },
-    "criador-resum": {
-      "source": {
-        "source": "github",
-        "repo": "BadMiche/Criador.Resum"
-      }
     }
-  },
-  "enabledPlugins": {
-    "typesafe@typesafe-ai": true,
-    "criador-resum@criador-resum": true
   }
 }

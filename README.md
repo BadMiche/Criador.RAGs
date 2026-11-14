@@ -28,10 +28,10 @@ arquivo → 1 extrair (.md + imagens/pNNN_figMM.png) → 2 Jev filtra imagens �
 
 ## Instalar
 
-**No Mac** (uma vez):
+**No Mac** (uma vez, no Terminal):
 
 ```bash
-claude plugin marketplace add BadMiche/Criador.Resum
+claude plugin marketplace add https://github.com/BadMiche/Criador.RAGs.git
 ```
 
 ```bash
@@ -42,19 +42,35 @@ claude plugin install criador-resum@criador-resum
 echo 'export TYPESAFE_API_KEY=sua_chave' >> ~/.zshrc
 ```
 
-A chave é criada em https://console.typesafe.ai. As dependências Python são instaladas sozinhas no primeiro uso,
-num venv próprio em `~/.criador-resum/venv`.
+- Use a URL **HTTPS** como acima. A forma curta (`BadMiche/...`) clona por SSH e falha se o Mac não tiver chave SSH do GitHub.
+- A chave do Jev é criada em https://console.typesafe.ai. Depois do `echo`, abra um Terminal novo.
+- As dependências Python são instaladas sozinhas no primeiro uso, num venv próprio em `~/.criador-resum/venv`.
+- Se aparecer "marketplace já existe", remova e repita: `claude plugin marketplace remove criador-resum`.
+- Se você instalou a versão antiga (`criador-rags`), remova antes:
+  `claude plugin uninstall criador-rags@criador-rags` e `claude plugin marketplace remove criador-rags`.
 
 **Na nuvem (claude.ai/code):** use o ambiente "Criador.Resum", que já tem a chave do Jev salva e instala o plugin
 em toda sessão nova. Neste repositório, o plugin também já vem habilitado em `.claude/settings.json`.
 
 ## Usar
 
-```
-/criador-resum:criar-rag <nome-do-rag> arquivo1.pdf arquivo2.pdf
-```
+Uma conversa do Claude Code que já estava aberta antes da instalação não enxerga o plugin. Abra uma nova:
 
-Para continuar um projeto que parou no meio, rode o mesmo comando só com o nome (`/criador-resum:criar-rag bronquiolite`).
+**Pelo Terminal**
+1. Se o Claude Code estiver aberto, feche (`/exit`).
+2. Vá até a pasta dos PDFs: `cd ~/Documents/artigos`
+3. Abra o Claude Code: `claude`
+4. Digite o comando com o nome do RAG e os arquivos:
+   ```
+   /criador-resum:criar-rag bronquiolite artigo1.pdf artigo2.pdf
+   ```
+   Ao digitar `/criador`, o comando deve aparecer nas sugestões. Se aparecer, a instalação deu certo.
+
+**Pelo app Claude para desktop (aba Code):** abra uma conversa nova, escolha a pasta dos PDFs e digite o mesmo comando.
+
+- O resultado sai em `rags/<nome>/` dentro da pasta onde você abriu o Claude; o resumo de leitura fica em `rags/<nome>/resumos/`.
+- Para continuar um projeto que parou no meio: `/criador-resum:criar-rag bronquiolite` (só o nome).
+- Se o comando não aparecer nas sugestões, rode `claude plugin list` no Terminal e confira se `criador-resum` está instalado e habilitado.
 
 Por baixo, `scripts/pipeline.py` roda sozinho todas as etapas de código e de Jev e devolve as tarefas de agente que
 faltam (com prompt e lotes); a skill dispara essas tarefas em paralelo e repete até concluir.
