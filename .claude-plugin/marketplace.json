@@ -1,11 +1,11 @@
 {
-  "name": "criador-rags",
+  "name": "criador-resum",
   "owner": {
     "name": "BadMiche"
   },
   "plugins": [
     {
-      "name": "criador-rags",
+      "name": "criador-resum",
       "source": "./",
       "description": "Workflow multi-modelo para preparar documentos para RAG."
     }

@@ -41,7 +41,7 @@ class Tarefa(Exception):
     """Interrompe o avanço do documento: precisa de agente."""
 
     def __init__(self, etapa: str, agente: str, prompt: str, **extra):
-        self.dados = {"etapa": etapa, "agente": agente, "subagent_type": f"criador-rags:{agente}",
+        self.dados = {"etapa": etapa, "agente": agente, "subagent_type": f"criador-resum:{agente}",
                       "modelo": MODELOS[agente], "instrucoes": str(RAIZ_PLUGIN / "agents" / f"{agente}.md"),
                       "prompt": prompt, **extra}
 

@@ -6,15 +6,15 @@
         "repo": "typesafe-ai/skills"
       }
     },
-    "criador-rags": {
+    "criador-resum": {
       "source": {
         "source": "github",
-        "repo": "BadMiche/Criador.RAGs"
+        "repo": "BadMiche/Criador.Resum"
       }
     }
   },
   "enabledPlugins": {
     "typesafe@typesafe-ai": true,
-    "criador-rags@criador-rags": true
+    "criador-resum@criador-resum": true
   }
 }
