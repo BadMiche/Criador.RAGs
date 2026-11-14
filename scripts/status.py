@@ -1,12 +1,12 @@
 """Mostra em que etapa está cada documento do projeto e qual é a próxima.
 
-  python status.py <projeto>
+  python status.py results/<assunto>
 """
 from __future__ import annotations
 
 import argparse
 
-from comum import Projeto, ler_json, ler_jsonl
+from comum import Projeto, ler_json, ler_jsonl, projeto_de
 
 
 def proxima(proj: Projeto, doc: str) -> str:
@@ -46,13 +46,15 @@ def proxima(proj: Projeto, doc: str) -> str:
         return "11 montar.py"
     if not proj.resumo(doc).exists():
         return "11b resumo (agente resumo-leitura-sonnet)"
+    if not (proj.raiz.parent / doc / "resumido.md").exists():
+        return "12 publicar (automático)"
     return "concluído"
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("projeto")
-    proj = Projeto(ap.parse_args().projeto)
+    ap.add_argument("destino", help="results/<assunto>")
+    proj = projeto_de(ap.parse_args().destino)
     for doc in proj.documentos():
         print(f"{doc}: {proxima(proj, doc)}")
 

@@ -1,6 +1,6 @@
 {
   "name": "criador-resum",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Workflow multi-modelo (código, Jev/TypeSafe, Haiku, Sonnet, Opus) que transforma arquivos em Markdown limpo com metadados, imagens identificadas, trechos filtrados/enxutos e resumo de leitura.",
   "author": {
     "name": "BadMiche"

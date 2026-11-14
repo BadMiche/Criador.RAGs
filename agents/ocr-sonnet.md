@@ -1,6 +1,6 @@
 ---
 name: ocr-sonnet
-description: Transcreve páginas digitalizadas (imagem) para Markdown, sem resumir. Use na etapa 1b do criar-rag, quando ocr/<doc>/pendentes.json existir.
+description: Transcreve páginas digitalizadas (imagem) para Markdown, sem resumir. Use na etapa 1b do resumir, quando ocr/<doc>/pendentes.json existir.
 model: sonnet
 tools: Read, Write
 ---

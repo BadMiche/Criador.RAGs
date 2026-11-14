@@ -1,6 +1,9 @@
 """Motor do workflow: avança cada documento sozinho até precisar de um agente.
 
-  python pipeline.py <projeto> [arquivo ...]
+  python pipeline.py results/<assunto> [arquivo ...]
+
+Resultado final, uma pasta por arquivo: results/<assunto>/<arquivo>/{resumido.md, limpo.md, imagens/}.
+Arquivos de trabalho: results/<assunto>/.trabalho/.
 
 - Arquivos novos são extraídos; documentos já existentes continuam de onde pararam.
 - Etapas de código e de Jev rodam aqui mesmo. Quando um documento precisa de um agente
@@ -16,6 +19,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -26,8 +31,8 @@ import metadados
 import montar
 import triagem
 import verificar
-from comum import (RAIZ_PLUGIN, Projeto, carregar_config, ler_json, ler_jsonl, salvar_json, salvar_jsonl,
-                   slug)
+from comum import (RAIZ_PLUGIN, Projeto, carregar_config, ler_json, ler_jsonl, projeto_de, salvar_json,
+                   salvar_jsonl, slug)
 from jev_client import JevErro
 
 LOTE_HAIKU = 12          # trechos por agente de enxugamento (medido no teste real)
@@ -163,7 +168,38 @@ def passo(proj: Projeto, doc: str, log: list) -> bool:
                      base + f"Texto final: {proj.limpo(doc)}\nRelatório: {proj.relatorio(doc)}\n"
                             f"Saída: {proj.resumo(doc)} (links de imagem relativos a essa pasta: ../imagens/...)\n"
                             "Use como título o nome real do documento; cite portaria/revista na linha de referência.")
+
+    # 12. publicar: uma pasta por arquivo com o essencial
+    if not (proj.raiz.parent / doc / "resumido.md").exists():
+        log.append(f"{doc}: publicado em {publicar(proj, doc)}")
+        return True
     return False
+
+
+def publicar(proj: Projeto, doc: str) -> Path:
+    """results/<assunto>/<doc>/{resumido.md, limpo.md, imagens/} com links de imagem relativos à pasta."""
+    destino = proj.raiz.parent / doc
+    (destino / "imagens").mkdir(parents=True, exist_ok=True)
+    origem_img = proj.imagens(doc)
+    for i in ler_json(origem_img / "indice.json", []):
+        if i.get("mantida") and (origem_img / i["arquivo"]).exists():
+            shutil.copy2(origem_img / i["arquivo"], destino / "imagens" / i["arquivo"])
+    if (origem_img / "indice.md").exists():
+        shutil.copy2(origem_img / "indice.md", destino / "imagens" / "indice.md")
+    ocr_dir = proj.raiz / "ocr" / doc
+    prefixo = re.compile(rf"\(\.\./(imagens|ocr)/{re.escape(doc)}/([^)]+)\)")
+
+    def links(texto: str) -> str:
+        def troca(m: re.Match) -> str:
+            if m.group(1) == "ocr" and (ocr_dir / m.group(2)).exists():   # página digitalizada citada no texto
+                shutil.copy2(ocr_dir / m.group(2), destino / "imagens" / m.group(2))
+            return f"(imagens/{m.group(2)})"
+        return prefixo.sub(troca, texto)
+
+    (destino / "limpo.md").write_text(links(proj.limpo(doc).read_text(encoding="utf-8")), encoding="utf-8")
+    # o resumo é escrito por último: é ele que marca o documento como publicado
+    (destino / "resumido.md").write_text(links(proj.resumo(doc).read_text(encoding="utf-8")), encoding="utf-8")
+    return destino
 
 
 def avancar(proj: Projeto, arquivos: list[str]) -> dict:
@@ -173,7 +209,6 @@ def avancar(proj: Projeto, arquivos: list[str]) -> dict:
         doc = slug(arq.name)
         if doc in existentes:
             continue
-        import shutil
         shutil.copy2(arq, proj.pasta("originais") / f"{doc}{arq.suffix.lower()}")
         res = extrair.extrair_pdf(proj, arq, doc, cfg) if arq.suffix.lower() == ".pdf" \
             else extrair.extrair_outro(proj, arq, doc)
@@ -198,10 +233,10 @@ def avancar(proj: Projeto, arquivos: list[str]) -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("projeto")
+    ap.add_argument("destino", help="results/<assunto>")
     ap.add_argument("arquivos", nargs="*")
     a = ap.parse_args()
-    print(json.dumps(avancar(Projeto(a.projeto), a.arquivos), ensure_ascii=False, indent=2))
+    print(json.dumps(avancar(projeto_de(a.destino), a.arquivos), ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

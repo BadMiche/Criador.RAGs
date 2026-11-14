@@ -1,6 +1,6 @@
 ---
 name: resumo-leitura-sonnet
-description: Escreve, a partir do texto final já filtrado e enxugado, um resumo bem redigido para leitura. Use na etapa 11b do criar-rag.
+description: Escreve, a partir do texto final já filtrado e enxugado, um resumo bem redigido para leitura. Use na etapa 11b do resumir.
 model: sonnet
 tools: Read, Write
 ---

@@ -1,6 +1,6 @@
 ---
 name: metadados-haiku
-description: Completa os campos de metadados que o código e o Jev não conseguiram preencher (título, autores, ano, revista, edição, DOI). Use na etapa 4b do criar-rag.
+description: Completa os campos de metadados que o código e o Jev não conseguiram preencher (título, autores, ano, revista, edição, DOI). Use na etapa 4b do resumir.
 model: haiku
 tools: Read, Write
 ---

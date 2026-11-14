@@ -23,7 +23,7 @@ arquivo → 1 extrair (.md + imagens/pNNN_figMM.png) → 2 Jev filtra imagens �
         → 6 dividir → 7 Jev tria cada trecho → 7b Sonnet revisa "descartar" e incertos
         → 8 Haiku enxuga ⇄ 9 verificação (código + Jev), até 2 voltas com feedback
         → 10 se ainda falhar: Opus diagnostica e pode recriar o plano (1×)
-        → 11 montar limpo/<doc>.md → Sonnet escreve resumos/<doc>_resumo.md
+        → 11 montar o texto limpo → Sonnet escreve o resumo → 12 publicar em results/<assunto>/<arquivo>/
 ```
 
 ## Instalar
@@ -31,7 +31,7 @@ arquivo → 1 extrair (.md + imagens/pNNN_figMM.png) → 2 Jev filtra imagens �
 **No Mac** (uma vez, no Terminal):
 
 ```bash
-claude plugin marketplace add https://github.com/BadMiche/Criador.RAGs.git
+claude plugin marketplace add https://github.com/BadMiche/Criador.Resum.git
 ```
 
 ```bash
@@ -62,32 +62,35 @@ Uma conversa do Claude Code que já estava aberta antes da instalação não enx
 3. Abra o Claude Code: `claude`
 4. Digite o comando com o nome do RAG e os arquivos:
    ```
-   /criador-resum:criar-rag bronquiolite artigo1.pdf artigo2.pdf
+   /criador-resum:resumir bronquiolite artigo1.pdf artigo2.pdf
    ```
    Ao digitar `/criador`, o comando deve aparecer nas sugestões. Se aparecer, a instalação deu certo.
 
 **Pelo app Claude para desktop (aba Code):** abra uma conversa nova, escolha a pasta dos PDFs e digite o mesmo comando.
 
-- O resultado sai em `rags/<nome>/` dentro da pasta onde você abriu o Claude; o resumo de leitura fica em `rags/<nome>/resumos/`.
-- Para continuar um projeto que parou no meio: `/criador-resum:criar-rag bronquiolite` (só o nome).
+- O resultado sai em `results/<assunto>/`, uma pasta por arquivo, dentro da pasta onde você abriu o Claude (veja **Saída**).
+- Para continuar um assunto que parou no meio: `/criador-resum:resumir bronquiolite` (só o assunto).
 - Se o comando não aparecer nas sugestões, rode `claude plugin list` no Terminal e confira se `criador-resum` está instalado e habilitado.
 
 Por baixo, `scripts/pipeline.py` roda sozinho todas as etapas de código e de Jev e devolve as tarefas de agente que
 faltam (com prompt e lotes); a skill dispara essas tarefas em paralelo e repete até concluir.
-Para ver em que etapa está cada documento: `python scripts/status.py rags/<nome>`.
+Para ver em que etapa está cada documento: `python scripts/status.py results/<assunto>`.
 
-## Saída (`rags/<nome>/`)
+## Saída
 
-| Pasta | Conteúdo |
-|---|---|
-| `fontes/` | .md extraído, com frontmatter de metadados e marcadores de página |
-| `imagens/<doc>/` | `pNNN_figMM.png` (página + nº da figura), `indice.md` com legenda e descrição |
-| `plano/` | o plano do Opus de cada documento (e as versões anteriores) |
-| `trechos/`, `triagem/`, `revisao/`, `verificacao/` | as decisões de cada etapa, para auditoria |
-| `limpo/` | o texto final filtrado e enxuto |
-| `resumos/` | o resumo de leitura |
-| `relatorio/` | o que foi removido e por quê, e a redução de tokens |
-| `logs/` | o payload exato de cada chamada ao Jev |
+```
+results/bronquiolite/
+  artigo1/
+    resumido.md        resumo de leitura
+    limpo.md           texto filtrado e enxuto (base do futuro RAG)
+    imagens/           imagens mantidas (pNNN_figMM.png = página + nº da figura) e indice.md
+  artigo2/ …
+  .trabalho/           arquivos intermediários, para auditoria e para retomar
+```
+
+Em `.trabalho/` ficam o `.md` extraído com metadados (`fontes/`), o plano do Opus (`plano/`), as decisões de cada etapa
+(`trechos/`, `triagem/`, `revisao/`, `verificacao/`), o que foi removido e por quê (`relatorio/`) e o payload exato de
+cada chamada ao Jev (`logs/`).
 
 Limiares, modelo do Jev e limites do loop ficam em `config.yaml`. Um plano de exemplo está em `docs/exemplo_plano.json`.
 

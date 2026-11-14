@@ -37,12 +37,17 @@ def _agente_falso(t: dict, plano_exemplo: dict, proj) -> None:
                                                     "das décadas, como é amplamente sabido.", "")
                     salvar_json(Path(item["saida"]), {"fatos_chave": [], "condensado": cond.strip()})
     elif t["agente"] == "resumo-leitura-sonnet":
-        proj.resumo(doc).write_text("# Resumo\n", encoding="utf-8")
+        imgs = [i["arquivo"] for i in ler_json(proj.imagens(doc) / "indice.json") if i["mantida"]]
+        proj.resumo(doc).write_text("# Resumo\n\n" + "".join(f"![fig](../imagens/{doc}/{a})\n" for a in imgs),
+                                    encoding="utf-8")
     else:
         raise AssertionError(f"agente inesperado: {t['agente']}")
 
 
-def test_pipeline_ate_concluir(projeto, pdf_exemplo, plano_exemplo, jev):
+def test_pipeline_ate_concluir(tmp_path, pdf_exemplo, plano_exemplo, jev):
+    from comum import projeto_de
+    destino = tmp_path / "results" / "bronquiolite"
+    projeto = projeto_de(destino)
     pedidos = []
     saida = pipeline.avancar(projeto, [str(pdf_exemplo)])
     for _ in range(15):
@@ -57,8 +62,15 @@ def test_pipeline_ate_concluir(projeto, pdf_exemplo, plano_exemplo, jev):
     assert saida["concluidos"] == ["bronquiolite-revisao-2021"]
     assert pedidos == ["descrever-imagem-haiku", "metadados-haiku", "planejador-opus",
                        "revisor-triagem-sonnet", "enxugar-haiku", "resumo-leitura-sonnet"]
-    limpo = projeto.limpo("bronquiolite-revisao-2021").read_text()
+    # resultado publicado: uma pasta por arquivo, links de imagem válidos a partir dela
+    pasta = destino / "bronquiolite-revisao-2021"
+    assert sorted(p.name for p in pasta.iterdir()) == ["imagens", "limpo.md", "resumido.md"]
+    limpo, resumo = (pasta / "limpo.md").read_text(), (pasta / "resumido.md").read_text()
     assert "Ralston" not in limpo and "Historicamente" not in limpo
+    links = re.findall(r"!\[[^\]]*\]\(([^)]+)\)", limpo + resumo)
+    assert links and all((pasta / l).exists() for l in links), links
+    assert (pasta / "imagens" / "indice.md").exists()
+    assert sorted(p.name for p in destino.iterdir()) == [".trabalho", "bronquiolite-revisao-2021"]
 
 
 def test_pipeline_lotes_e_erro_do_jev(projeto, pdf_exemplo, monkeypatch):
