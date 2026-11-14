@@ -1,0 +1,76 @@
+{
+  "versao": 1,
+  "perfil": "artigo de revisão clínica (pediatria), com resumo, seções temáticas, tabelas de doses e referências",
+  "contexto_documento": "Artigo de revisão sobre manejo da bronquiolite em lactentes. O leitor é um médico que quer apenas o conteúdo clínico: critérios, condutas, doses e evidências. Partes editoriais e bibliografia não interessam.",
+  "divisao": {
+    "nivel_heading": 2,
+    "max_tokens": 1200,
+    "min_tokens": 120,
+    "unir_pequenas": true,
+    "sobreposicao_paragrafos": 1,
+    "observacoes": "Seções ## são temáticas e curtas; tabelas de dose ficam inteiras."
+  },
+  "perguntas_triagem": {
+    "lista_referencias": {
+      "type": "noul",
+      "instructions": "Is `trecho` mostly a list of bibliographic references?",
+      "criteria": {
+        "true": "numbered or alphabetical citations with authors, titles, journals and years",
+        "false": "running text, tables or lists with clinical content, even if it cites references"
+      }
+    },
+    "editorial": {
+      "type": "noul",
+      "instructions": "Is `trecho` editorial or administrative material, such as acknowledgments, funding, conflicts of interest, author affiliations, copyright or submission dates?",
+      "criteria": {
+        "true": "the text is about the authors, the journal or the publication process",
+        "false": "the text is about the disease, its diagnosis or its treatment"
+      }
+    },
+    "conteudo_clinico": {
+      "type": "noul",
+      "instructions": "Does `trecho` state a diagnostic criterion, treatment, dose, prognosis or study result about bronchiolitis?"
+    },
+    "tipo_secao": {
+      "type": "choice",
+      "instructions": "What kind of section is `trecho`?",
+      "criteria": {
+        "resumo_estruturado": "the abstract with objective, methods, results and conclusion",
+        "introducao_contexto": "background, history or epidemiology that motivates the review",
+        "metodologia_da_revisao": "how the authors searched and selected the literature",
+        "conteudo_clinico": "diagnosis, severity assessment, treatment or follow-up",
+        "conclusao": "final remarks summarizing the review"
+      }
+    },
+    "prolixidade": {
+      "type": "score",
+      "instructions": "How much of `trecho` could be cut without losing any clinical information?",
+      "criteria": [
+        "Nothing: every sentence carries a fact, number or recommendation",
+        "A little: a few sentences repeat ideas or add transitions",
+        "A lot: long explanations, repetitions or background around a few key facts"
+      ]
+    }
+  },
+  "regras": [
+    {"se": [{"q": "lista_referencias", "op": ">", "v": 0.7}], "acao": "descartar", "motivo": "lista de referências"},
+    {"se": [{"q": "editorial", "op": ">", "v": 0.7}, {"q": "conteudo_clinico", "op": "<", "v": 0.3}], "acao": "descartar", "motivo": "material editorial"},
+    {"se": [{"q": "tipo_secao", "op": "==", "v": "metodologia_da_revisao"}, {"q": "conteudo_clinico", "op": "<", "v": 0.3}], "acao": "descartar", "motivo": "metodologia da revisão"},
+    {"se": [{"q": "prolixidade", "op": ">=", "v": 1.2}], "acao": "enxugar", "motivo": "trecho prolixo"}
+  ],
+  "acao_padrao": "manter",
+  "enxugamento": {
+    "instrucoes": "Reescreva de forma direta, em português, mantendo a ordem do original. Preserve exatamente números, doses, faixas etárias, critérios e graus de recomendação. Remova repetições, transições e explicações históricas.",
+    "fatos_chave": "critérios diagnósticos e de gravidade, indicações e contraindicações de cada tratamento, doses, sinais de alarme, critérios de internação e alta, resultados numéricos de estudos"
+  },
+  "perguntas_verificacao": {
+    "recomendacao_mudou": {
+      "type": "noul",
+      "instructions": "Does `condensado` change the strength of a recommendation stated in `original`, for example turning 'not recommended' into 'may be considered'?"
+    }
+  },
+  "exigencias_verificacao": [
+    {"q": "recomendacao_mudou", "op": "<", "v": 0.3, "motivo": "a força de uma recomendação mudou"}
+  ],
+  "justificativa": "Nouls atômicos separam bibliografia e material editorial; o Choice de tipo de seção pega a metodologia da revisão; o Score de prolixidade decide o enxugamento. 'conteudo_clinico' protege trechos mistos."
+}

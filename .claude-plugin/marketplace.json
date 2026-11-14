@@ -1,0 +1,14 @@
+{
+  "name": "criador-rags",
+  "owner": {
+    "name": "BadMiche"
+  },
+  "plugins": [
+    {
+      "name": "criador-rags",
+      "source": "./",
+      "description": "Workflow multi-modelo para preparar documentos para RAG."
+    }
+  ],
+  "description": "Workflow multi-modelo para preparar documentos para RAG."
+}

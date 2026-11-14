@@ -1,0 +1,36 @@
+# Configuração do workflow Criador.RAGs
+
+jev:
+  modelo: jev-1.14.0          # versão fixa: limiares calibrados não mudam sozinhos (alias: jev-latest)
+  url: https://api.typesafe.ai/v1/systemone
+  timeout_s: 60
+  tentativas: 4               # 429/529/erros de rede, com backoff
+  concorrencia: 8             # requests em paralelo
+
+# Noul entre estes valores = "não decidido" -> regra conservadora / revisão
+faixa_incerta: [0.3, 0.7]
+
+extracao:
+  min_caracteres_pagina: 80   # abaixo disso a página é tratada como digitalizada (OCR pelo Sonnet)
+  limite_tamanho_imagem: 0.05 # fração da página; imagens menores são ignoradas
+  repeticao_logo: 3           # imagem idêntica em >= N páginas = logo/cabeçalho
+
+imagens:
+  informativa_min: 0.3        # abaixo: descarta
+  decorativa_max: 0.7         # acima: descarta
+
+metadados:
+  aceitar_min: 0.7            # Noul "algum candidato serve?" abaixo disso -> Haiku preenche
+  linhas_candidatas: 40       # linhas das primeiras páginas usadas como candidatas
+
+verificacao:
+  fato_min: 0.7               # cada fato-chave precisa estar no condensado
+  inventa_max: 0.3            # condensado não pode afirmar o que o original não diz
+  omite_max: 0.7              # pergunta geral de omissão: só reprova quando o Jev diz claramente que sim
+                              # (as checagens precisas são os fatos-chave e os números)
+  max_voltas: 2               # re-enxugamentos com feedback antes de chamar o diagnóstico
+  max_redesenhos: 1           # quantas vezes o Opus pode refazer o plano de um documento
+
+esqueleto:
+  limite_tokens_md: 30000     # acima disso o planejador lê o esqueleto, não o .md inteiro
+  amostra_caracteres: 400
