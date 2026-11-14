@@ -28,25 +28,36 @@ arquivo → 1 extrair (.md + imagens/pNNN_figMM.png) → 2 Jev filtra imagens �
 
 ## Instalar
 
-```bash
-pip install -r requirements.txt
-```
+**No Mac** (uma vez):
 
 ```bash
-export TYPESAFE_API_KEY=...   # https://console.typesafe.ai
+claude plugin marketplace add BadMiche/Criador.RAGs
 ```
 
-No Claude Code:
-
-```
-/plugin install criador-rags --marketplace BadMiche/Criador.RAGs
+```bash
+claude plugin install criador-rags@criador-rags
 ```
 
-O plugin `typesafe@typesafe-ai` (a skill do Jev) já está habilitado em `.claude/settings.json` para quem trabalha neste repositório.
+```bash
+echo 'export TYPESAFE_API_KEY=sua_chave' >> ~/.zshrc
+```
+
+A chave é criada em https://console.typesafe.ai. As dependências Python são instaladas sozinhas no primeiro uso,
+num venv próprio em `~/.criador-rags/venv`.
+
+**Na nuvem (claude.ai/code):** use o ambiente "Criador.RAGs", que já tem a chave do Jev salva e instala o plugin
+em toda sessão nova. Neste repositório, o plugin também já vem habilitado em `.claude/settings.json`.
 
 ## Usar
 
-Peça ao Claude: *"cria um RAG chamado bronquiolite com estes PDFs"*. A skill `criar-rag` conduz as etapas.
+```
+/criador-rags:criar-rag <nome-do-rag> arquivo1.pdf arquivo2.pdf
+```
+
+Para continuar um projeto que parou no meio, rode o mesmo comando só com o nome (`/criador-rags:criar-rag bronquiolite`).
+
+Por baixo, `scripts/pipeline.py` roda sozinho todas as etapas de código e de Jev e devolve as tarefas de agente que
+faltam (com prompt e lotes); a skill dispara essas tarefas em paralelo e repete até concluir.
 Para ver em que etapa está cada documento: `python scripts/status.py rags/<nome>`.
 
 ## Saída (`rags/<nome>/`)
