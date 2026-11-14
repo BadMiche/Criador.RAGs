@@ -5,9 +5,16 @@
         "source": "github",
         "repo": "typesafe-ai/skills"
       }
+    },
+    "criador-rags": {
+      "source": {
+        "source": "github",
+        "repo": "BadMiche/Criador.RAGs"
+      }
     }
   },
   "enabledPlugins": {
-    "typesafe@typesafe-ai": true
+    "typesafe@typesafe-ai": true,
+    "criador-rags@criador-rags": true
   }
 }

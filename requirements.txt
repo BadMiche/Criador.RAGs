@@ -3,3 +3,4 @@ markitdown>=0.1
 PyYAML>=6
 requests>=2.31
 pytest>=8
+Pillow>=10

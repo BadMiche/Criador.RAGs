@@ -65,8 +65,11 @@ def perguntar(state, questions: dict, *, assets: dict | None = None,
     """Uma chamada ao Jev. Retorna {id: resposta} no formato da API."""
     cfg = _cfg()
     chave = os.environ.get("TYPESAFE_API_KEY")
+    if not chave and os.environ.get("CLAUDE_CODE_REMOTE") == "true":
+        chave = "proxy-injected"  # nuvem: o proxy do ambiente injeta a chave salva
     if not chave:
-        raise JevErro("TYPESAFE_API_KEY não definida no ambiente.")
+        raise JevErro("TYPESAFE_API_KEY não definida. No Mac: adicione `export TYPESAFE_API_KEY=...` ao ~/.zshrc "
+                      "(crie a chave em https://console.typesafe.ai) e abra um terminal novo.")
     payload = {"model": cfg["modelo"], "state": state, "questions": questions}
     headers = {"Authorization": f"Bearer {chave}", "Content-Type": "application/json"}
     if assets:
