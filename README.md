@@ -31,7 +31,7 @@ arquivo → 1 extrair (.md + imagens/pNNN_figMM.png) → 2 Jev filtra imagens �
 **No Mac** (uma vez, no Terminal):
 
 ```bash
-claude plugin marketplace add https://github.com/BadMiche/Criador.RAGs.git
+claude plugin marketplace add https://github.com/BadMiche/Criador.Resum.git
 ```
 
 ```bash
