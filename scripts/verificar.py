@@ -128,7 +128,7 @@ def rodar(proj: Projeto, doc: str) -> dict:
         if r["omite"]["noul"] > vc["omite_max"]:
             falhas.append(f"o condensado deixou de fora recomendação/critério/dose/resultado (p={r['omite']['noul']:.2f})")
         falhas += [f"exigência do plano: {m}" for m in planolib.exigencias_falhas(plano, r)]
-        if len(cond) >= len(orig):
+        if len(cond) >= len(orig) and len(orig) > 200:  # um título solto não tem como encolher
             falhas.append("o condensado não ficou menor que o original")
 
         s = est.setdefault(tid, {"tentativas": 0, "historico": []})

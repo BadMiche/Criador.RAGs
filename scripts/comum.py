@@ -34,7 +34,7 @@ class Projeto:
     """Pastas de um projeto (futuro RAG): rags/<nome>/..."""
 
     def __init__(self, raiz: str | Path):
-        self.raiz = Path(raiz)
+        self.raiz = Path(raiz).resolve()
 
     def pasta(self, nome: str) -> Path:
         p = self.raiz / nome
