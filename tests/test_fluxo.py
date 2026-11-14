@@ -191,3 +191,16 @@ def test_numeros_com_unidade():
     a = verificar.numeros("Dose 10 mg/kg, saturação < 90 %, 3-5 dias; ver ![x](p012_fig03.png)")
     assert a == {"10mg", "90%", "3-5dias"}
     assert verificar.numeros("Dose 10 mg/kg") <= a
+
+
+def test_imagem_dentro_dos_limites_do_jev(tmp_path):
+    import io
+
+    from PIL import Image
+
+    import jev_client
+    for w, h in ((198, 169), (1064, 245), (3000, 900)):
+        p = tmp_path / f"{w}x{h}.png"
+        Image.new("RGB", (w, h), "red").save(p)
+        out = Image.open(io.BytesIO(jev_client.preparar_imagem(p)))
+        assert all(jev_client.IMG_MIN <= s <= jev_client.IMG_MAX for s in out.size), out.size

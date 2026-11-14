@@ -31,13 +31,33 @@ def _cfg() -> dict:
     return carregar_config()["jev"]
 
 
+IMG_MIN, IMG_MAX = 280, 1568  # limites do Jev por lado (px); fora disso a API rejeita
+
+
+def preparar_imagem(caminho: Path) -> bytes:
+    """Cópia PNG dentro dos limites do Jev: reduz se passar de 1568 px, completa com branco se tiver menos de 280."""
+    import io
+
+    from PIL import Image
+
+    img = Image.open(caminho).convert("RGB")
+    escala = min(1.0, IMG_MAX / max(img.size))
+    if escala < 1:
+        img = img.resize((max(1, round(img.width * escala)), max(1, round(img.height * escala))))
+    if min(img.size) < IMG_MIN:
+        fundo = Image.new("RGB", (max(img.width, IMG_MIN), max(img.height, IMG_MIN)), "white")
+        fundo.paste(img, ((fundo.width - img.width) // 2, (fundo.height - img.height) // 2))
+        img = fundo
+    buf = io.BytesIO()
+    img.save(buf, "PNG")
+    return buf.getvalue()
+
+
 def imagem_asset(caminho: Path) -> tuple[str, dict]:
     """Retorna (placeholder, asset) para colocar a imagem no state ou nas instructions."""
-    ext = Path(caminho).suffix.lower().lstrip(".")
-    fmt = "jpeg" if ext in ("jpg", "jpeg") else "png"
     ref = f"img-{uuid.uuid4().hex}"
-    dados = base64.b64encode(Path(caminho).read_bytes()).decode()
-    return ref, {"type": "image", "format": fmt, "data_base64": dados}
+    dados = base64.b64encode(preparar_imagem(Path(caminho))).decode()
+    return ref, {"type": "image", "format": "png", "data_base64": dados}
 
 
 def perguntar(state, questions: dict, *, assets: dict | None = None,
