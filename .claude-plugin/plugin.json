@@ -1,0 +1,8 @@
+{
+  "name": "criador-rags",
+  "version": "0.1.0",
+  "description": "Workflow multi-modelo (código, Jev/TypeSafe, Haiku, Sonnet, Opus) que transforma arquivos em Markdown limpo com metadados, imagens identificadas, trechos filtrados/enxutos e resumo de leitura.",
+  "author": {
+    "name": "BadMiche"
+  }
+}
