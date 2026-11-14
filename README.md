@@ -1,4 +1,4 @@
-# Criador.RAGs
+# Criador.Resum
 
 Plugin do Claude Code que transforma um ou mais arquivos (PDF, DOCX...) em:
 **Markdown limpo + metadados de origem + imagens identificadas + trechos filtrados/enxutos + resumo de leitura**.
@@ -31,11 +31,11 @@ arquivo → 1 extrair (.md + imagens/pNNN_figMM.png) → 2 Jev filtra imagens �
 **No Mac** (uma vez):
 
 ```bash
-claude plugin marketplace add BadMiche/Criador.RAGs
+claude plugin marketplace add BadMiche/Criador.Resum
 ```
 
 ```bash
-claude plugin install criador-rags@criador-rags
+claude plugin install criador-resum@criador-resum
 ```
 
 ```bash
@@ -43,18 +43,18 @@ echo 'export TYPESAFE_API_KEY=sua_chave' >> ~/.zshrc
 ```
 
 A chave é criada em https://console.typesafe.ai. As dependências Python são instaladas sozinhas no primeiro uso,
-num venv próprio em `~/.criador-rags/venv`.
+num venv próprio em `~/.criador-resum/venv`.
 
-**Na nuvem (claude.ai/code):** use o ambiente "Criador.RAGs", que já tem a chave do Jev salva e instala o plugin
+**Na nuvem (claude.ai/code):** use o ambiente "Criador.Resum", que já tem a chave do Jev salva e instala o plugin
 em toda sessão nova. Neste repositório, o plugin também já vem habilitado em `.claude/settings.json`.
 
 ## Usar
 
 ```
-/criador-rags:criar-rag <nome-do-rag> arquivo1.pdf arquivo2.pdf
+/criador-resum:criar-rag <nome-do-rag> arquivo1.pdf arquivo2.pdf
 ```
 
-Para continuar um projeto que parou no meio, rode o mesmo comando só com o nome (`/criador-rags:criar-rag bronquiolite`).
+Para continuar um projeto que parou no meio, rode o mesmo comando só com o nome (`/criador-resum:criar-rag bronquiolite`).
 
 Por baixo, `scripts/pipeline.py` roda sozinho todas as etapas de código e de Jev e devolve as tarefas de agente que
 faltam (com prompt e lotes); a skill dispara essas tarefas em paralelo e repete até concluir.

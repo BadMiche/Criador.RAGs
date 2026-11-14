@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Prepara o Python do Criador.RAGs (uma vez) e imprime o caminho do interpretador.
+# Prepara o Python do Criador.Resum (uma vez) e imprime o caminho do interpretador.
 # Usa um venv próprio porque o Python do Homebrew (Mac) recusa `pip install` global.
 set -euo pipefail
-VENV="${CRIADOR_RAGS_VENV:-$HOME/.criador-rags/venv}"
+VENV="${CRIADOR_RESUM_VENV:-$HOME/.criador-resum/venv}"
 RAIZ="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 if [ ! -x "$VENV/bin/python" ]; then
   python3 -m venv "$VENV" >&2

@@ -1,4 +1,4 @@
-# Configuração do workflow Criador.RAGs
+# Configuração do workflow Criador.Resum
 
 jev:
   modelo: jev-1.14.0          # versão fixa: limiares calibrados não mudam sozinhos (alias: jev-latest)

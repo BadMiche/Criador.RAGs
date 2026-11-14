@@ -50,7 +50,7 @@ def test_pipeline_ate_concluir(projeto, pdf_exemplo, plano_exemplo, jev):
         if not saida["tarefas"]:
             break
         for t in saida["tarefas"]:
-            assert Path(t["instrucoes"]).exists() and t["subagent_type"].startswith("criador-rags:")
+            assert Path(t["instrucoes"]).exists() and t["subagent_type"].startswith("criador-resum:")
             pedidos.append(t["agente"])
             _agente_falso(t, plano_exemplo, projeto)
         saida = pipeline.avancar(projeto, [str(pdf_exemplo)])   # rodar de novo com os mesmos args é seguro
