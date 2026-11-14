@@ -204,3 +204,14 @@ def test_imagem_dentro_dos_limites_do_jev(tmp_path):
         Image.new("RGB", (w, h), "red").save(p)
         out = Image.open(io.BytesIO(jev_client.preparar_imagem(p)))
         assert all(jev_client.IMG_MIN <= s <= jev_client.IMG_MAX for s in out.size), out.size
+
+
+def test_sobra_pequena_volta_para_o_pedaco_anterior():
+    paragrafos = [" ".join([f"Frase {i} com conteúdo."] * 30) for i in range(5)] + ["Sobra curta."]
+    md = "# Seção\n\n" + "\n\n".join(paragrafos) + "\n"
+    div = {"nivel_heading": 1, "max_tokens": 400, "min_tokens": 50, "unir_pequenas": True}
+    ts = dividir.dividir_md(md, div)
+    junto = "\n\n".join(t["texto"] for t in ts)
+    for p in paragrafos:
+        assert junto.count(p) == 1          # nada perdido nem duplicado
+    assert "Sobra curta." in ts[-1]["texto"] and ts[-1]["tokens"] > 50

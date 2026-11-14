@@ -101,7 +101,8 @@ def dividir_md(md: str, divisao: dict) -> list[dict]:
         # sobra pequena no fim da seção volta para o pedaço anterior, se couber com folga
         if divisao.get("unir_pequenas", True) and len(pedacos) > 1 and tok(pedacos[-1]) < min_tok \
                 and tok(pedacos[-2] + pedacos[-1]) <= max_tok * 1.2:
-            pedacos[-2] += pedacos.pop()
+            ultimo = pedacos.pop()
+            pedacos[-1] = pedacos[-1] + ultimo
         trechos += pedacos
 
     out = []
